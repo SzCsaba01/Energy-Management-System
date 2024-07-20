@@ -1,4 +1,5 @@
 Integrated Energy Management System
+
 This repository contains the frontend and backend code for the Integrated Energy Management System. The project involves creating an integrated system by connecting microservices and ensuring security features are in place.
 
 The Integrated Energy Management System provides functionalities for managing users, devices, and real-time communication. It is designed to be scalable, secure, and deployable using Docker containers.
