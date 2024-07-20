@@ -5,6 +5,7 @@ This repository contains the frontend and backend code for the Integrated Energy
 The Integrated Energy Management System provides functionalities for managing users, devices, and real-time communication. It is designed to be scalable, secure, and deployable using Docker containers.
 
 Features
+
 User Registration and Login
 User and Device Management
 Real-time Notifications using WebSockets
@@ -12,6 +13,7 @@ Secure Communication with JWT
 Dockerized Microservices
 
 Architecture
+
 The system is composed of multiple microservices, each responsible for specific functionalities:
 
 User Management Microservice: Handles user operations (CRUD) and interacts with the user database.
