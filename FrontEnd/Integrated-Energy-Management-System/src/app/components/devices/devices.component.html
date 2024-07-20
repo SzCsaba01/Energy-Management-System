@@ -1,0 +1,197 @@
+<div class="devices-container">
+    <div  class="add-device-btn" *ngIf="userRole==='Admin'">
+        <button class="btn btn-secondary" (click)="changeShowAddDeviceModal()">Add Device</button>
+    </div>
+    <div [ngClass]="{'clickable': userRole==='Admin', 'mat-elevation-z8': 'true'}">
+        <table mat-table  matSort [dataSource]="dataSource" class="mat-elevation-z8">
+            <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+                Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+            <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+                Description </th>
+            <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+            </ng-container>
+            <ng-container matColumnDef="address">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>
+            <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+            </ng-container>
+            <ng-container matColumnDef="maxHourlyEnergyConsumption">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+                Max Hourly Energy Consumption </th>
+            <td mat-cell *matCellDef="let element"> {{element.maxHourlyEnergyConsumption}} </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row (click)="onRowClicked(row)" *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10]"showFirstLastButtons>
+        </mat-paginator>
+    </div>
+</div>
+  
+<div class="datepicker-chart-container" *ngIf="userRole=='User'">
+  <mat-form-field>
+    <input matInput 
+      [matDatepicker]="picker" 
+      [(ngModel)]="selectedDate" 
+      (ngModelChange)="dateChanged()" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <canvas id="monitoringChart"></canvas>
+</div>
+
+<div class="modal" *ngIf="isAddDeviceModalShown" [ngStyle]="{'display':'block'}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLongTitle">Add Device</h4>
+        <i (click)="changeShowAddDeviceModal()" class="close bi bi-x-circle clickable cancel-button-modals"></i>
+      </div>
+      <div class="modal-body">
+      <form [formGroup]="addDeviceFG" novalidate>
+          <div class="form-group">
+            <label>Name</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              formControlName="name" 
+              [ngClass]="{'is-invalid': addNameFC.errors && (addNameFC.touched || addNameFC.dirty), 'is-valid':addNameFC.valid}">
+            <div class="invalid-feedback" >
+              <strong *ngIf="addNameFC.errors?.['required']">Name is required</strong>
+              <strong *ngIf="addNameFC.errors?.['minLength']"> Name must contain atleast 5 characters</strong>
+              <strong *ngIf="addNameFC.errors?.['maxLength']"> Name must contain maximum 50 characters</strong>
+          </div>
+          </div>
+          <div class="form-group">
+              <label>Description</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                formControlName="description" 
+                [ngClass]="{'is-invalid': addDescriptionFC.errors && (addDescriptionFC.touched || addDescriptionFC.dirty), 'is-valid':addDescriptionFC.valid}">
+              <div class="invalid-feedback" >
+                <strong *ngIf="addDescriptionFC.errors?.['required']">Description is required</strong>
+                <strong *ngIf="addDescriptionFC.errors?.['minLength']"> Description must contain atleast 10 characters</strong>
+                <strong *ngIf="addDescriptionFC.errors?.['maxLength']"> Description must contain maximum 200 characters</strong>
+              </div>
+          </div>
+          <div class="form-group">
+              <label>Address</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                formControlName="address" 
+                [ngClass]="{'is-invalid': addAddressFC.errors && (addAddressFC.touched || addAddressFC.dirty), 'is-valid':addAddressFC.valid}">
+              <div class="invalid-feedback" >
+                <strong *ngIf="addAddressFC.errors?.['required']">Address is required</strong>
+                <strong *ngIf="addAddressFC.errors?.['minLength']"> Address must contain atleast 10 characters</strong>
+                <strong *ngIf="addAddressFC.errors?.['maxLength']"> Address must contain maximum 100 characters</strong>
+              </div>
+          </div>
+          <div class="form-group">
+              <label>Max Hourly Energy Consumption</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                formControlName="maxHourlyEnergyConsumption" 
+                [ngClass]="{'is-invalid': addMaxHourlyEnergyConsumptionFC.errors && 
+                          (addMaxHourlyEnergyConsumptionFC.touched || addMaxHourlyEnergyConsumptionFC.dirty), 
+                          'is-valid':addMaxHourlyEnergyConsumptionFC.valid}">
+              <div class="invalid-feedback" >
+                <strong *ngIf="addMaxHourlyEnergyConsumptionFC.errors?.['required']">
+                  Max Hourly Energy Consumption is required</strong>
+                <strong *ngIf="addMaxHourlyEnergyConsumptionFC.errors?.['min']"> 
+                  Max Hourly Energy Consumption must be atleast 5</strong>
+                <strong *ngIf="addMaxHourlyEnergyConsumptionFC.errors?.['max']"> 
+                  Max Hourly Energy Consumption must be maximum 50</strong>
+              </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+          <button type="submit" [disabled]="addDeviceFG.invalid" (click)="onAddDevice(addDeviceFG.value)" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" *ngIf="isEditDeviceModalShown" [ngStyle]="{'display':'block'}">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="exampleModalLongTitle">Edit Device</h4>
+          <i (click)="exitEditDevice()" class="close bi bi-x-circle clickable cancel-button-modals"></i>
+        </div>
+        <div class="modal-body">
+        <form [formGroup]="editDeviceFG" novalidate>
+            <div class="form-group">
+              <label>Name</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                formControlName="name" 
+                [ngClass]="{'is-invalid': editNameFC.errors && (editNameFC.touched || editNameFC.dirty), 'is-valid':editNameFC.valid}">
+              <div class="invalid-feedback" >
+                <strong *ngIf="editNameFC.errors?.['required']">Name is required</strong>
+                <strong *ngIf="editNameFC.errors?.['minLength']"> Name must contain atleast 5 characters</strong>
+                <strong *ngIf="editNameFC.errors?.['maxLength']"> Name must contain maximum 50 characters</strong>
+            </div>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  formControlName="description" 
+                  [ngClass]="{'is-invalid': editDescriptionFC.errors && (editDescriptionFC.touched || editDescriptionFC.dirty), 'is-valid':editDescriptionFC.valid}">
+                <div class="invalid-feedback" >
+                  <strong *ngIf="editDescriptionFC.errors?.['required']">Description is required</strong>
+                  <strong *ngIf="editDescriptionFC.errors?.['minLength']"> Description must contain atleast 10 characters</strong>
+                  <strong *ngIf="editDescriptionFC.errors?.['maxLength']"> Description must contain maximum 200 characters</strong>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  formControlName="address" 
+                  [ngClass]="{'is-invalid': editAddressFC.errors && (editAddressFC.touched || editAddressFC.dirty), 'is-valid':editAddressFC.valid}">
+                <div class="invalid-feedback" >
+                  <strong *ngIf="editAddressFC.errors?.['required']">Address is required</strong>
+                  <strong *ngIf="editAddressFC.errors?.['minLength']"> Address must contain atleast 10 characters</strong>
+                  <strong *ngIf="editAddressFC.errors?.['maxLength']"> Address must contain maximum 100 characters</strong>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Max Hourly Energy Consumption</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  formControlName="maxHourlyEnergyConsumption" 
+                  [ngClass]="{'is-invalid': editMaxHourlyEnergyConsumptionFC.errors && 
+                            (editMaxHourlyEnergyConsumptionFC.touched || editMaxHourlyEnergyConsumptionFC.dirty), 
+                            'is-valid':editMaxHourlyEnergyConsumptionFC.valid}">
+                <div class="invalid-feedback" >
+                  <strong *ngIf="editMaxHourlyEnergyConsumptionFC.errors?.['required']">
+                    Max Hourly Energy Consumption is required</strong>
+                  <strong *ngIf="editMaxHourlyEnergyConsumptionFC.errors?.['min']"> 
+                    Max Hourly Energy Consumption must be atleast 5</strong>
+                  <strong *ngIf="editMaxHourlyEnergyConsumptionFC.errors?.['max']"> 
+                    Max Hourly Energy Consumption must be maximum 50</strong>
+                </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" (click)="onDeleteSelectedDevice()" class="btn btn-danger">Delete</button>
+            <button type="submit" [disabled]="editDeviceFG.invalid" (click)="onSaveChanges(editDeviceFG.value)" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </div>
+</div>

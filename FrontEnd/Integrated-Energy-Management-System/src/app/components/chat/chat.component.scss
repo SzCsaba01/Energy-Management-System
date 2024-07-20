@@ -1,0 +1,81 @@
+.chat-container {
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    margin-top: 5rem;
+    width: 70%;
+}
+  
+.user-list {
+    width: 30%;
+    padding: 10px;
+    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
+}
+  
+mat-list-item {
+    cursor: pointer;
+}
+  
+.unseen {
+    font-weight: bold;
+}
+  
+.chat-messages {
+    width: 70%;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: 12rem;
+}
+  
+mat-card {
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+  
+mat-card-title {
+    font-size: 1.5em;
+}
+  
+  /* Border between user list and chat messages */
+.user-list {
+    border-right: 1px solid #ccc;
+    max-height: 18rem;
+    overflow-y: auto;
+}
+  
+  /* Style for message alignment */
+.message-left {
+    text-align: left;
+}
+  
+.seen {
+    background-color: #e1e1ff; 
+}
+  
+  /* Style for message input form */
+.message-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    position: absolute;
+    bottom: 0;
+    background-color: #fff;
+    width: 47%;
+    z-index: 1;
+    bottom: 35vh;
+}
+
+mat-form-field {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+
+.typing-indicator {
+    padding: 5px;
+    color: #777;
+}
+  
+  
+  

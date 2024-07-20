@@ -1,0 +1,36 @@
+.mat-tab {
+  color: white;
+}
+
+.flex-spacer {
+  flex: 1 1 auto;
+}
+
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: rgb(187, 26, 26);
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  animation: slideIn 0.5s, fadeOut 0.5s 4.5s;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

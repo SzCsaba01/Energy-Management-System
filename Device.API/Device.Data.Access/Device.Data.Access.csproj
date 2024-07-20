@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<OutputType>Library</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Device.Data.Contracts\Device.Data.Contracts.csproj" />
+    <ProjectReference Include="..\Device.Data.Object\Device.Data.Objects.csproj" />
+  </ItemGroup>
+
+</Project>

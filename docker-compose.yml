@@ -1,0 +1,151 @@
+version: '3.9'
+
+networks:
+  my_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/16
+
+services:
+  sql-server-user:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      SA_PASSWORD: ComplexPassword123!
+      ACCEPT_EULA: Y
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    networks:
+      - my_network
+    volumes:
+      - my-user-db:/var/opt/mssql
+
+  sql-server-device:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      SA_PASSWORD: ComplexPassword123!
+      ACCEPT_EULA: Y
+      MSSQL_PID: Developer
+    ports:
+      - "1434:1433"
+    networks:
+      - my_network
+    volumes:
+      - my-device-db:/var/opt/mssql
+
+  sql-server-monitoring:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      SA_PASSWORD: ComplexPassword123!
+      ACCEPT_EULA: Y
+      MSSQL_PID: Developer
+    ports:
+      - "1435:1433"
+    networks:
+      - my_network
+    volumes:
+      - my-monitoring-db:/var/opt/mssql
+
+  sql-server-chat:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      SA_PASSWORD: ComplexPassword123!
+      ACCEPT_EULA: Y
+      MSSQL_PID: Developer
+    ports:
+      - "1436:1433"
+    networks:
+      - my_network
+    volumes:
+      - my-chat-db:/var/opt/mssql
+
+  user-microservice:
+    image: user-microservice-image
+    ports:
+      - "5076:80"
+    environment:
+      DefaultConnection: "Server=sql-server-user,1433;Database=Users;User Id=SimpleUser;Password=#Password123;TrustServerCertificate=True"
+    networks:
+      - my_network
+    depends_on:
+      - sql-server-user
+
+  chat-microservice:
+    image: chat-microservice-image
+    ports:
+      - "5031:80"
+    environment:
+      DefaultConnection: "Server=sql-server-chat,1433;Database=Chat;User Id=SimpleUser;Password=#Password123;TrustServerCertificate=True"
+    networks:
+      - my_network
+    depends_on:
+      - sql-server-chat
+  
+  device-queue:
+    image: "rabbitmq:3-management"
+    hostname: "deviceQueue"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+    networks:
+      - my_network
+  
+  monitoring-queue:
+    image: "rabbitmq:3-management"
+    hostname: "monitoringQueue"
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+    networks:
+      - my_network
+
+  monitoring-and-communication-microservice:
+    image: monitoring-and-communication-microservice-image
+    ports:
+      - "5173:80"
+    environment:
+      DefaultConnection: "Server=sql-server-monitoring,1433;Database=Monitoring;User Id=SimpleUser;Password=#Password123;TrustServerCertificate=True"
+    networks:
+      - my_network
+    depends_on:
+      - sql-server-monitoring
+      - monitoring-queue
+      - device-queue
+
+  device-microservice:
+    image: device-microservice-image
+    ports:
+      - "5121:80"
+    environment:
+      DefaultConnection: "Server=sql-server-device,1433;Database=Devices;User Id=SimpleUser;Password=#Password123;TrustServerCertificate=True"
+    networks:
+      - my_network
+    depends_on:
+      - sql-server-device
+      - device-queue
+      - monitoring-and-communication-microservice
+
+  energy-management-frontend:
+    image: energy-management-frontend-image
+    ports:
+      - "4200:80"
+    networks:
+      - my_network
+    depends_on:
+      - user-microservice
+      - device-microservice
+      - monitoring-and-communication-microservice
+
+volumes:
+  my-user-db:
+  my-device-db:
+  my-monitoring-db:
+  my-chat-db:

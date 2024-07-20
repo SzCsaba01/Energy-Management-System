@@ -1,0 +1,43 @@
+<div class="chat-container">
+    <div *ngIf="usernames && usernames.length > 0 || adminId" class="user-list">
+      <mat-list>
+        <mat-list-item *ngFor="let chat of chats" 
+            [class.unseen]="(loggedUserRole === 'Admin' && !chat.isLastMessageSeenByAdmin) ||
+                            (loggedUserRole === 'User' && !chat.isLastMessageSeenByUser)" 
+            (click)="showChatMessages(chat)">
+          <span>{{ chat.username }}</span>
+        </mat-list-item>
+      </mat-list>
+    </div>
+
+    <div *ngIf="(loggedUserRole === 'User' && typeing.isAdminTyping) ||
+        (loggedUserRole === 'Admin' && typeing.isUserTyping)" 
+        class="typing-indicator">
+      <p *ngIf="loggedUserRole === 'Admin'">{{ typeing.username }} is typing...</p>
+      <p *ngIf="loggedUserRole === 'User'">Admin is typing...</p>
+    </div>
+
+    <div *ngIf="selectedChat" class="chat-messages">
+        <mat-card>
+        <mat-card-title>{{ selectedChat.username }}</mat-card-title>
+        <mat-card-content>
+            <div *ngFor="let message of selectedChat.messages" 
+                class="message-left"
+                [ngClass]="{ 'seen': (loggedUserRole === 'Admin' && message.isUserSeen) ||
+                                     (loggedUserRole === 'User' && message.isAdminSeen)}">
+            <p>{{ message.message }}</p>
+            </div>
+        </mat-card-content>
+        </mat-card>
+    
+        <div class="message-input">
+        <mat-form-field appearance="fill">
+            <mat-label>Type your message</mat-label>
+            <input matInput [(ngModel)]="newMessage.message" (ngModelChange)="onTypingChange()" placeholder="Type your message">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="sendMessage()">Send</button>
+        </div>
+    </div>
+
+</div>
+  

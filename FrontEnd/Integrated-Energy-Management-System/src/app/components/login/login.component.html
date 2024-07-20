@@ -1,0 +1,33 @@
+<div class="container-fluid p-5 my-5 border">
+    <div class="tab-content">
+      <div class="content">
+        <form class="form-horizontal" [formGroup]="loginForm">
+          <div class="form-outline mb-4">
+            <span class="input-icon"><i class="fa fa-envelope"></i></span>
+            <input 
+              type="text" 
+              class="form-control"
+              placeholder="Email Address / Username"
+              formControlName="userCredentials" />
+          </div>
+
+          <div class="form-outline mb-4">
+            <span class="input-icon"><i class="fa fa-lock"></i></span>
+            <input 
+              class="form-control" 
+              type="password" 
+              placeholder="Password"
+              formControlName="password"
+              />
+          </div>
+
+          <div class="row mb-4">
+            <div class="d-flex justify-content-center">
+              <button class="btn btn-primary" (click)="onSignIn(loginForm.value)">Sign in</button>
+            </div>
+          </div>
+         
+        </form>
+      </div>
+    </div>
+</div>

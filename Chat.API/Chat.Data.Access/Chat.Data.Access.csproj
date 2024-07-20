@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chat.Data.Contracts\Chat.Data.Contracts.csproj" />
+    <ProjectReference Include="..\Chat.Data.Object\Chat.Data.Object.csproj" />
+  </ItemGroup>
+
+</Project>

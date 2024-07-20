@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <ul class="navbar-nav me-auto">
+      <li class="nav-item">
+        <a class="navbar-brand">Energy Management System</a>
+      </li>
+      <li calss="nav-item">
+        <a class="nav-link" routerLink="/devices" routerLinkActive="active">Devices</a>
+      </li>
+      <li class="nav-item" *ngIf="isAdmin()">
+        <a class="nav-link" routerLink="/users" routerLinkActive="active">Users</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/chat" routerLinkActive="active">Chat</a>
+      </li>
+    </ul>
+    
+    <div>
+        <ul class="navbar-nav me-auto align-center">
+          <li class="nav-item">
+            <button mat-icon-button (click)="onLogout()">
+              <mat-icon>exit_to_app</mat-icon>
+            </button>
+          </li>
+        </ul>
+    </div>
+  </div>
+</nav>
+
+<div *ngIf="notificationMessages.length > 0">
+  <div class="notification-container" *ngFor="let message of notificationMessages">
+    {{ message }}
+  </div>
+</div>
